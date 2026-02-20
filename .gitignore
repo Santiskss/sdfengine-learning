@@ -1,0 +1,23 @@
+# Dependencias
+node_modules/
+npm-debug.log*
+
+# Variables de entorno
+.env
+.env.local
+
+# IDE (Cursor/VS Code)
+.vscode/
+.idea/
+*.swp
+
+# Sistema Operativo
+.DS_Store
+Thumbs.db
+
+# Docker y Logs
+*.log
+
+# Salidas de compilación
+dist/
+build/

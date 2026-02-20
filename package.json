@@ -1,0 +1,16 @@
+{
+  "name": "sdfengine-learning",
+  "version": "1.0.0",
+  "description": "Proyecto de aprendizaje para SDFEngine",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "learning",
+    "node",
+    "docker"
+  ],
+  "author": "",
+  "license": "ISC"
+}
