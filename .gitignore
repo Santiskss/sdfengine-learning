@@ -5,6 +5,7 @@ npm-debug.log*
 # Variables de entorno
 .env
 .env.local
+.env.*.local
 
 # IDE (Cursor/VS Code)
 .vscode/

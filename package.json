@@ -12,5 +12,8 @@
     "docker"
   ],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "dotenv": "^17.3.1"
+  }
 }
