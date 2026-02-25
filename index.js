@@ -1,88 +1,57 @@
-const Config = require('./config');
-const DatabaseSeeder = require('./database/seeders/seed.js');
-require('./database/models');
-const databaseConnection = require('./database/connection.js');
+const CreateUserUseCase = require('./src/application/useCases/CreateUser.useCase');
+const UserMemoryRepository = require('./src/infrastructure/adapters/UserMemory.repository');
 
-console.log(`🚀 ${Config.app.name} v${Config.app.version}`);
+console.log('='.repeat(60));
+console.log('🚀 SDFEngine Learning - Arquitectura Hexagonal');
 console.log('='.repeat(60));
 console.log('');
 
 const main = async () => {
+  console.log('📦 Inicializando repositorio en memoria...');
+  const userRepository = new UserMemoryRepository();
+
+  console.log('🔧 Creando caso de uso...');
+  const createUserUseCase = new CreateUserUseCase(userRepository);
+
+  console.log('');
+  console.log('--- Caso de Uso 1: Crear usuario válido ---');
   try {
-    console.log('🔍 Validating environment variables...');
-    Config.validate();
-    console.log('');
-    
-    Config.display();
-    console.log('');
-
-    console.log('--- Ejemplo 1: Usar configuración de app ---');
-    console.log(`Running in ${Config.app.env} mode`);
-    console.log(`Server would start on port ${Config.app.port}`);
-    console.log('');
-
-    console.log('--- Ejemplo 2: Usar configuración de base de datos ---');
-    const db = Config.database;
-    console.log(`Database connection string: postgresql://${db.user}:${db.password}@${db.host}:${db.port}/${db.database}`);
-    console.log('');
-
-    console.log('--- Ejemplo 3: Usar feature flags ---');
-    if (Config.features.logging) {
-      console.log('📝 Logging is ENABLED');
-    } else {
-      console.log('📝 Logging is DISABLED');
-    }
-
-    if (Config.features.debug) {
-      console.log('🐛 Debug mode is ENABLED');
-      console.log('Debug info: API timeout =', Config.api.timeout, 'ms');
-    }
-    console.log('');
-
-    console.log('--- Ejemplo 4: Configuración condicional por entorno ---');
-    switch (Config.app.env) {
-      case 'development':
-        console.log('🔧 Development mode: Using local database');
-        console.log('🔧 Debug tools enabled');
-        break;
-      case 'production':
-        console.log('🚀 Production mode: Using production database');
-        console.log('🚀 Performance optimizations enabled');
-        break;
-      case 'test':
-        console.log('🧪 Test mode: Using test database');
-        console.log('🧪 Mocking external services');
-        break;
-      default:
-        console.log('⚠️ Unknown environment');
-    }
-
-    console.log('');
-    console.log('='.repeat(60));
-    console.log('✅ Configuration loaded successfully');
-    console.log('='.repeat(60));
-
-    console.log('Seeding database...');
-    const isConnected = await databaseConnection.testConnection();
-    if (isConnected) {
-      await databaseConnection.sync({alter: true});
-      console.log('Database synchronized successfully');
-      const seeder = new DatabaseSeeder();
-      await seeder.run();
-      console.log('Database seeded successfully');
-    } else {
-      console.error('❌ Unable to connect to database');
-      process.exit(1);
-    }
-
-  } catch (error) { 
-    console.error('');
-    console.error('❌ Configuration Error:', error.message);
-    console.error('');
-    console.error('💡 Tip: Make sure you have a .env file with all required variables.');
-    console.error('💡 Check .env.example for reference.');
-    process.exit(1);
+    const user1 = await createUserUseCase.execute({
+      name: 'Juan Pérez',
+      email: 'juan@example.com'
+    });
+    console.log('Resultado:', user1.toJSON());
+  } catch (error) {
+    console.error('❌ Error:', error.message);
   }
+
+  console.log('');
+  console.log('--- Caso de Uso 2: Crear usuario inválido ---');
+  try {
+    const user2 = await createUserUseCase.execute({
+      name: 'María García',
+      email: 'email-invalido'
+    });
+    console.log('Resultado:', user2.toJSON());
+  } catch (error) {
+    console.error('❌ Error:', error.message);
+  }
+
+  console.log('');
+  console.log('--- Listar todos los usuarios ---');
+  const allUsers = await userRepository.findAll();
+  console.log(`Total de usuarios: ${allUsers.length}`);
+  allUsers.forEach(user => {
+    console.log(` - ${user.getDisplayName()}`);
+  });
+
+  console.log('');
+  console.log('='.repeat(60));
+  console.log('✅ Demostración completada');
+  console.log('='.repeat(60));
 };
 
-main();
+main().catch(error => {
+  console.error('💥 Error fatal:', error);
+  process.exit(1);
+});
