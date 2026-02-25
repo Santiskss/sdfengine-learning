@@ -10,42 +10,18 @@ services:
     environment:
       APP_NAME: "SDFEngine Learning"
       NODE_ENV: development
-      DB_HOST: db
+      DB_HOST: sdfengine-learning-db
       DB_PORT: 5432
       DB_USER: admin
       DB_PASSWORD: 1234
       DB_DATABASE: sdfengine_learning
       ENABLE_LOGGING: "true"
       ENABLE_DEBUG: "true"
-    depends_on:
-      db:
-        condition: service_healthy
     command: npm start
     networks:
-      - app-network
-
-  db:
-    image: postgres:14-alpine
-    container_name: sdfengine-learning-db
-    environment:
-      POSTGRES_USER: admin
-      POSTGRES_PASSWORD: 1234
-      POSTGRES_DB: sdfengine_learning
-    ports:
-      - "5432:5432"
-    volumes:
-      - postgres-data:/var/lib/postgresql/data
-    healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U admin -d sdfengine_learning"]
-      interval: 5s
-      timeout: 5s
-      retries: 5
-    networks:
-      - app-network
+      - external-network
 
 networks:
-  app-network:
-    driver: bridge
-
-volumes:
-  postgres-data:
+  external-network:
+    external: true
+    name: sdfengine-shared-net
