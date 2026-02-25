@@ -1,6 +1,8 @@
 const Config = require('./config');
+const DatabaseSeeder = require('./database/seeders/seed.js');
+require('./database/models');
+const databaseConnection = require('./database/connection.js');
 
-console.log('='.repeat(60));
 console.log(`🚀 ${Config.app.name} v${Config.app.version}`);
 console.log('='.repeat(60));
 console.log('');
@@ -60,7 +62,20 @@ const main = async () => {
     console.log('✅ Configuration loaded successfully');
     console.log('='.repeat(60));
 
-  } catch (error) {
+    console.log('Seeding database...');
+    const isConnected = await databaseConnection.testConnection();
+    if (isConnected) {
+      await databaseConnection.sync({alter: true});
+      console.log('Database synchronized successfully');
+      const seeder = new DatabaseSeeder();
+      await seeder.run();
+      console.log('Database seeded successfully');
+    } else {
+      console.error('❌ Unable to connect to database');
+      process.exit(1);
+    }
+
+  } catch (error) { 
     console.error('');
     console.error('❌ Configuration Error:', error.message);
     console.error('');
