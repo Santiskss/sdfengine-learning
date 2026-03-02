@@ -1,4 +1,5 @@
 const models = require('../models');
+
 const databaseOperations = {
     async createUser(user) {
         try {

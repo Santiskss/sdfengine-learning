@@ -1,57 +1,37 @@
-const CreateUserUseCase = require('./src/application/useCases/CreateUser.useCase');
-const UserMemoryRepository = require('./src/infrastructure/adapters/UserMemory.repository');
+// 1. Importamos la conexión a la DB (Infraestructura)
+const db = require('./src/infrastructure/database/models/index.js'); 
 
-console.log('='.repeat(60));
-console.log('🚀 SDFEngine Learning - Arquitectura Hexagonal');
-console.log('='.repeat(60));
-console.log('');
+// 2. Importamos el Repositorio de Postgres (Adaptador de Infraestructura)
+const UserPostgresRepository = require('./src/infrastructure/database/repositories/UserPostgres.repository.js');
 
-const main = async () => {
-  console.log('📦 Inicializando repositorio en memoria...');
-  const userRepository = new UserMemoryRepository();
+// 3. Importamos el Caso de Uso (Aplicación)
+const CreateUserUseCase = require('./src/application/useCases/CreateUser.useCase.js');
 
-  console.log('🔧 Creando caso de uso...');
-  const createUserUseCase = new CreateUserUseCase(userRepository);
-
-  console.log('');
-  console.log('--- Caso de Uso 1: Crear usuario válido ---');
+async function comprobarFuncionamiento() {
   try {
-    const user1 = await createUserUseCase.execute({
-      name: 'Juan Pérez',
-      email: 'juan@example.com'
-    });
-    console.log('Resultado:', user1.toJSON());
+    // PASO A: Autenticar con PostgreSQL (Docker debe estar levantado)
+    await db.sequelize.authenticate();
+    console.log('✅ Conexión con PostgreSQL: OK');
+
+    // PASO B: Instanciar el repositorio
+    const userRepository = new UserPostgresRepository();
+
+    // PASO C: Instanciar el caso de uso inyectando el repositorio
+    const createUserUseCase = new CreateUserUseCase(userRepository);
+
+    // PASO D: Ejecutar el flujo
+    console.log('⏳ Intentando guardar un usuario...');
+    const datosEntrada = { name: "Santiago Test", email: "santiago@test.com" };
+    
+    const usuarioCreado = await createUserUseCase.execute(datosEntrada);
+
+    // PASO E: Verificar el resultado
+    console.log('🚀 ¡Éxito! Usuario devuelto por el sistema:', usuarioCreado);
+    console.log('¿Es una entidad pura?:', usuarioCreado.constructor.name === 'User' ? 'SÍ' : 'NO');
+
   } catch (error) {
-    console.error('❌ Error:', error.message);
+    console.error('❌ Error en la comprobación:', error.message);
   }
+}
 
-  console.log('');
-  console.log('--- Caso de Uso 2: Crear usuario inválido ---');
-  try {
-    const user2 = await createUserUseCase.execute({
-      name: 'María García',
-      email: 'email-invalido'
-    });
-    console.log('Resultado:', user2.toJSON());
-  } catch (error) {
-    console.error('❌ Error:', error.message);
-  }
-
-  console.log('');
-  console.log('--- Listar todos los usuarios ---');
-  const allUsers = await userRepository.findAll();
-  console.log(`Total de usuarios: ${allUsers.length}`);
-  allUsers.forEach(user => {
-    console.log(` - ${user.getDisplayName()}`);
-  });
-
-  console.log('');
-  console.log('='.repeat(60));
-  console.log('✅ Demostración completada');
-  console.log('='.repeat(60));
-};
-
-main().catch(error => {
-  console.error('💥 Error fatal:', error);
-  process.exit(1);
-});
+comprobarFuncionamiento();
