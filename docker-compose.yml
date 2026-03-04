@@ -7,6 +7,8 @@ services:
     volumes:
       - .:/app
       - /app/node_modules
+    ports:
+      - "3000:3000"
     environment:
       APP_NAME: "SDFEngine Learning"
       NODE_ENV: development
@@ -15,12 +17,13 @@ services:
       DB_USER: admin
       DB_PASSWORD: 1234
       DB_DATABASE: sdfengine_learning
+      GOOGLE_API_KEY: ${GOOGLE_API_KEY}
       ENABLE_LOGGING: "true"
       ENABLE_DEBUG: "true"
     depends_on:
       db:
         condition: service_healthy
-    command: npm start
+    command: npm run dev
     networks:
       - app-network
 
@@ -51,7 +54,17 @@ services:
         - "8080:8080"
       networks:
         - app-network
-        
+  
+  ai-service:
+    build: ./ai-service
+    container_name: sdfengine-ai-python
+    ports:
+      - "8000:8000"
+    environment:
+      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
+    networks:
+      - app-network
+
 networks:
   app-network:
     driver: bridge

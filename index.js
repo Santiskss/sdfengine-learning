@@ -1,37 +1,39 @@
-// 1. Importamos la conexión a la DB (Infraestructura)
-const db = require('./src/infrastructure/database/models/index.js'); 
+const express = require ('express');
+const AiServiceAdapter = require('./src/infrastructure/adapters/AiServiceAdapter.js');
 
-// 2. Importamos el Repositorio de Postgres (Adaptador de Infraestructura)
-const UserPostgresRepository = require('./src/infrastructure/database/repositories/UserPostgres.repository.js');
+const app = express();
+const aiService = new AiServiceAdapter();
 
-// 3. Importamos el Caso de Uso (Aplicación)
-const CreateUserUseCase = require('./src/application/useCases/CreateUser.useCase.js');
+app.use(express.json());
 
-async function comprobarFuncionamiento() {
-  try {
-    // PASO A: Autenticar con PostgreSQL (Docker debe estar levantado)
-    await db.sequelize.authenticate();
-    console.log('✅ Conexión con PostgreSQL: OK');
+app.post('/api/chat', async (req, res)=> {
+ try {
+  const { prompt } = req.body
 
-    // PASO B: Instanciar el repositorio
-    const userRepository = new UserPostgresRepository();
-
-    // PASO C: Instanciar el caso de uso inyectando el repositorio
-    const createUserUseCase = new CreateUserUseCase(userRepository);
-
-    // PASO D: Ejecutar el flujo
-    console.log('⏳ Intentando guardar un usuario...');
-    const datosEntrada = { name: "Santiago Test", email: "santiago@test.com" };
-    
-    const usuarioCreado = await createUserUseCase.execute(datosEntrada);
-
-    // PASO E: Verificar el resultado
-    console.log('🚀 ¡Éxito! Usuario devuelto por el sistema:', usuarioCreado);
-    console.log('¿Es una entidad pura?:', usuarioCreado.constructor.name === 'User' ? 'SÍ' : 'NO');
-
-  } catch (error) {
-    console.error('❌ Error en la comprobación:', error.message);
-  }
+  if (!prompt) {
+    return res.status(400).json({ error: 'Debes enviar un "prompt" en el cuerpo' });
 }
 
-comprobarFuncionamiento();
+  console.log(`Recibido: ${prompt}`);
+
+  const response = await aiService.generateResponse(prompt);
+
+  res.json({
+    success: true,
+    ai_response: response
+});
+
+ } catch (error) {
+  console.error('❌ Error en el flujo:', error.message);
+  res.status(500).json({ 
+      error: 'Hubo un problema conectando con el servicio de IA',
+      details: error.message 
+  });
+ }
+});
+
+const PORT = 3000;
+app.listen(PORT, () => {
+    console.log(`🚀 Servidor con Express listo en http://localhost:${PORT}`);
+    console.log(`🔗 Conectando con Python en: http://ai-service:8000`);
+});
