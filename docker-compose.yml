@@ -6,7 +6,6 @@ services:
     container_name: sdfengine-learning-app
     volumes:
       - .:/app
-      - /app/node_modules
     ports:
       - "3000:3000"
     environment:
@@ -54,16 +53,6 @@ services:
         - "8080:8080"
       networks:
         - app-network
-  
-  ai-service:
-    build: ./ai-service
-    container_name: sdfengine-ai-python
-    ports:
-      - "8000:8000"
-    environment:
-      - GOOGLE_API_KEY=${GOOGLE_API_KEY}
-    networks:
-      - app-network
 
 networks:
   app-network:

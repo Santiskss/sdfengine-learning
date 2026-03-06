@@ -1,14 +1,25 @@
-const axios = require('axios');
+const {GoogleGenerativeAI} = require ("@google/generative-ai");
 
 class AiServiceAdapter {
     constructor() {
-        this.apiUrl = 'http://ai-service:8000';
+        const apiKey = process.env.GOOGLE_API_KEY;
+        if (!apiKey) {
+            throw new Error("GOOGLE_API_KEY no está definido en las variables de entorno");
+        }
+    
+
+        this.client = new GoogleGenerativeAI(apiKey);
+
+        this.model = this.client.getGenerativeModel({
+            model: "gemini-2.5-flash",
+        });
     }
 
     async generateResponse(prompt) {
         try {
-            const response = await axios.post(`${this.apiUrl}/chat`, { message: prompt });
-            return response.data.answer;
+            const result = await this.model.generateContent(prompt);
+            const text = result.response.text();
+            return text;
         } catch (error) {
             console.error('Error generating response:', error);
             throw error;

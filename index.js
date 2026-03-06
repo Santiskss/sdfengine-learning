@@ -33,7 +33,8 @@ app.post('/api/chat', async (req, res)=> {
 });
 
 const PORT = 3000;
+
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor con Express listo en http://localhost:${PORT}`);
-    console.log(`🔗 Conectando con Python en: http://ai-service:8000`);
+  console.log(`🚀 Servidor con Express listo en http://localhost:${PORT}`);
 });
+
