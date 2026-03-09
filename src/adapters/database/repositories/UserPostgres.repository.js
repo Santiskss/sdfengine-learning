@@ -1,6 +1,6 @@
-const UserRepositoryInterface = require('../../../domain/repositories/UserRepository.interface.js');
+const UserRepositoryInterface = require('../../../repositories/UserRepository.interface.js');
 const UserMapper = require('../mappers/User.mapper.js');
-const { User: UserModel } = require('../models');
+const { User: UserModel } = require('../models/index.js');
 
 class UserPostgresRepository extends UserRepositoryInterface {
     async create(user) {

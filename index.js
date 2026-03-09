@@ -1,11 +1,11 @@
 // 1. Importamos la conexión a la DB (Infraestructura)
-const db = require('./src/infrastructure/database/models/index.js'); 
+const db = require('./src/infrastructure/adapters/database/models/index.js'); 
 
 // 2. Importamos el Repositorio de Postgres (Adaptador de Infraestructura)
-const UserPostgresRepository = require('./src/infrastructure/database/repositories/UserPostgres.repository.js');
+const UserPostgresRepository = require('./src/adapters/database/repositories/UserPostgres.repository.js');
 
 // 3. Importamos el Caso de Uso (Aplicación)
-const CreateUserUseCase = require('./src/application/useCases/CreateUser.useCase.js');
+const CreateUserUseCase = require('./src/useCases/CreateUser.useCase.js');
 
 async function comprobarFuncionamiento() {
   try {

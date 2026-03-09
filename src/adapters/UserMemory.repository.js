@@ -1,4 +1,4 @@
-const UserRepositoryInterface = require('../../domain/repositories/UserRepository.interface');
+const UserRepositoryInterface = require('../repositories/UserRepository.interface');
 const User = require('../../domain/entities/User.entity');
 
 class UserMemoryRepository extends UserRepositoryInterface {

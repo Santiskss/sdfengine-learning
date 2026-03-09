@@ -1,4 +1,4 @@
-const User = require('../../../domain/entities/User.entity.js');
+const User = require('../../../domain/user/User.model.js');
 
 class UserMapper {
     static toEntity(user) {

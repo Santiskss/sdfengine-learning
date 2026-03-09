@@ -1,4 +1,4 @@
-const User = require('../../domain/entities/User.entity');
+const User = require('../../domain/user/User.model');
 
 class CreateUserUseCase {
   constructor(userRepository) {
