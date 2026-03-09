@@ -49,11 +49,15 @@ class OrderDatabaseRepository {
   }
 
   async getById(id) {
+    try{
     const order = await OrderDatabaseModel.findByPk(id, {
       include: [{ association: 'items' }],
     });
 
     return order ? orderMapper(order.get({ plain: true })) : null;
+  }catch{
+    throw new Error(`Error al obtener order con id ${id}: ${error.message}`);
+    }
   }
 }
 
