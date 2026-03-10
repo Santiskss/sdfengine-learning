@@ -17,10 +17,12 @@ services:
       DB_DATABASE: sdfengine_learning
       ENABLE_LOGGING: "true"
       ENABLE_DEBUG: "true"
+    ports:
+      - "3000:3000"
     depends_on:
       db:
         condition: service_healthy
-    command: npm start
+    command: npm run start:api
     networks:
       - app-network
 
