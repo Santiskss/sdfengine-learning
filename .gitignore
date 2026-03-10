@@ -22,3 +22,5 @@ Thumbs.db
 # Salidas de compilación
 dist/
 build/
+
+coverage/

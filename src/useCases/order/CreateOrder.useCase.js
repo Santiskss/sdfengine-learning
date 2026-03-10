@@ -12,7 +12,7 @@ class CreateOrderUseCase {
       message: 'Creating order', 
       data: { customerId, itemCount: items?.length } 
     });
-
+    try{
     if (!items?.length) {
       throw new Error('Order must have at least one item');
     }
@@ -56,6 +56,12 @@ class CreateOrderUseCase {
     });
 
     return result;
+
+    } catch (error) {
+        this.logAdapter.log({ message: 'Order created', data: { error: error.message } });
+        throw error;
+
+    }
   }
 }
 
