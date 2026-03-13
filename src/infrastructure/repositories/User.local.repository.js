@@ -1,7 +1,7 @@
-const UserRepositoryInterface = require('../repositories/UserRepository.interface');
+const UserRepository = require('../../domain/user/User.repository');
 const User = require('../../domain/entities/User.entity');
 
-class UserMemoryRepository extends UserRepositoryInterface {
+class UserMemoryRepository extends UserRepository {
   constructor() {
     super();
     this.users = [];

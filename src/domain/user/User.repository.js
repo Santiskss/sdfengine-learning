@@ -1,4 +1,6 @@
-class UserRepositoryInterface {
+const User = require("./User.model");
+
+class UserRepository {
     async findAll() {
       throw new Error('Method findAll() must be implemented');
     }
@@ -7,6 +9,12 @@ class UserRepositoryInterface {
       throw new Error('Method findById() must be implemented');
     }
   
+    /**
+     * 
+     * @param {User} user
+     * @return {User}
+     */
+
     async create(user) {
       throw new Error('Method create() must be implemented');
     }

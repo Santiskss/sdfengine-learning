@@ -1,6 +1,6 @@
-const { OrderDatabaseModel, OrderItemDatabaseModel } = require('../adapters/database/models');
-const connectionDatabase = require('../adapters/database/models/connection.database');
-const { orderMapper } = require('../adapters/database/mappers');
+const { OrderDatabaseModel, OrderItemDatabaseModel } = require('../database/models');
+const connectionDatabase = require('../database/models/connection.database');
+const { orderMapper } = require('../database/mappers');
 
 class OrderDatabaseRepository {
   constructor({ logAdapter }) {

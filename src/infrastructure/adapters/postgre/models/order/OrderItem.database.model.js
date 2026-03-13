@@ -1,6 +1,6 @@
 const { Model, DataTypes } = require('sequelize');
 
-const databaseConnection = require('../../../database/models/connection.database'); 
+const databaseConnection = require('../connection.database'); 
 
 class OrderItemDatabaseModel extends Model {}
 
