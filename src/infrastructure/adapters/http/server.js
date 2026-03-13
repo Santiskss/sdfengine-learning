@@ -2,13 +2,14 @@ const express = require('express');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocument = require('./swagger.json');
 const orderRoutes = require('./routes/order.routes');
+const userRoutes = require('./routes/user.routes');
 const errorHandlerMiddleware = require('./middlewares/errorHandler.middleware');
 
 class HttpServer {
-  constructor({ orderController }) {
+  constructor({ orderController, userController }) {
     this.app = express();
     this._setupMiddlewares();
-    this._setupRoutes({ orderController });
+    this._setupRoutes({ orderController, userController });
     this._setupErrorHandler();
   }
 
@@ -17,8 +18,9 @@ class HttpServer {
     this.app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
   }
 
-  _setupRoutes({ orderController }) {
+  _setupRoutes({ orderController, userController }) {
     this.app.use('/api/orders', orderRoutes({ orderController }));
+    this.app.use('/api/users', userRoutes({ userController }));
   }
 
   _setupErrorHandler() {

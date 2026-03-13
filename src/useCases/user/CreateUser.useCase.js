@@ -31,9 +31,7 @@ class CreateUserUseCase {
       throw new Error('Invalid user data: name and valid email are required');
     }
 
-    const createdUser = await this.userRepository.create(user);
-    console.log(`✅ User created: ${createdUser.getDisplayName()}`);
-    return createdUser;
+    return this.userRepository.create(user);
   }
 }
 
